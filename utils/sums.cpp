@@ -2,6 +2,12 @@
 
 using namespace std;
 
+int sum_first_n(int n); // Sum of first n natural numbers
+int sum_first_n_sqr(int n); // Sum of first n natural numbers squared
+int sum_arithmetic(int a, int b, int n); // Sum of arithmetic sequence a...b (#n)
+int sum_geometric(int a, int b, int k); // Sum of geometric sequence a...b (k factor)
+int max_subarray_sum(vector<int> array); // Max subarray sum of elemnts
+
 int sum_first_n(int n){
     // 1 + 2 + ... + n
     return n * (n + 1) / 2; 

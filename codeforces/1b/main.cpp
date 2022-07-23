@@ -14,7 +14,6 @@ using namespace std;
 #define for0(i, n) for (int i = 0; i < n; ++i)
 #define for1(i, n) for (int i = 1; i <= n; ++i)
 #define fork(i, k, n) for (int i = k; i < n; ++i)
-#define PI 3.14159265358979323846
 
 typedef long long ll;
 typedef vector<int> vi;
@@ -31,17 +30,58 @@ inline int _gcd(int a, int b){
     return b ? _gcd(b, a % b) : a;
 }
 
-double gcd(double x, double y)
-{
-    return fabs(y) < 1e-6 ? x : gcd(y, fmod(x, y));
+/*---------------------------------------------------------------*/
+/*---------------------------------------------------------------*/
+/*---------------------------------------------------------------*/
+
+string num_to_string(int n){
+    string s = "";
+
+    while (n != 0){
+        s.insert(0, 1, 'A' + ((n - 1) % 26));
+        n = (int)floor((n - 1) / 26);
+    }
+
+    return s;
 }
 
-/*---------------------------------------------------------------*/
-/*---------------------------------------------------------------*/
-/*---------------------------------------------------------------*/
+int string_to_num(string s){
+    int n = 0;
+
+    for (auto &c : s){
+        n *= 26;
+        n += c - 'A' + 1;
+    }
+
+    return n;
+}
 
 void test_case(){
+    string coord;
+    cin >> coord;
 
+    if (coord[0] == 'R' && coord[1] >= '0' && coord[1] <= '9' && coord.find("C") != string::npos){
+        // Type 2
+        size_t pos_C = coord.find("C");
+        int row = stoi(coord.substr(1, pos_C - 1));
+        int col = stoi(coord.substr(pos_C + 1, coord.length() - (pos_C + 1)));
+
+        cout << num_to_string(col) << row << "\n";
+    }else{
+        // Type 1
+        size_t change = 0;
+        for (size_t i = 0; i < coord.length(); ++i){
+            if (coord[i] >= '0' && coord[i] <= '9'){
+                change = i;
+                break;
+            }
+        }
+
+        string col_str = coord.substr(0, change);
+        string row_str = coord.substr(change, coord.length() - change);
+
+        cout << "R" << row_str << "C" << string_to_num(col_str) << "\n";
+    }
 }
 
 int main(){

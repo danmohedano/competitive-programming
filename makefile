@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11 -O2 -Wall
 DIR=codeforces
-EXE=test
+EXE=1c
 
 MAINPATH=$(DIR)/$(EXE)
 
