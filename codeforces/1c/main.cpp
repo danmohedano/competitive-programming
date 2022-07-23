@@ -33,7 +33,7 @@ inline int _gcd(int a, int b){
 
 double gcd(double x, double y)
 {
-    return fabs(y) < 1e-6 ? x : gcd(y, fmod(x, y));
+    return fabs(y) < 1e-4 ? x : gcd(y, fmod(x, y));
 }
 
 /*---------------------------------------------------------------*/
@@ -61,12 +61,11 @@ pair<double, double> equidistant_point(vector<pair<double, double>> p){
 double angle_of_vectors(pair<double, double> a, pair<double, double> b){
     double dot = a.first * b.first + a.second * b.second;
     double dem = sqrt(pow(a.first, 2) + pow(a.second, 2)) * sqrt(pow(b.first, 2) + pow(b.second, 2));
-    if (dot < 0) dot *= -1.;
     return acos(dot / dem);
 }
 
 double area_polygon(int n_sides, double radius){
-    return pow(radius, 2) * n_sides  * 0.5 * sin(2 * PI / n_sides);
+    return radius * radius * n_sides  * 0.5 * sin(2 * PI / n_sides);
 }
 
 void test_case(){
@@ -95,7 +94,8 @@ void test_case(){
 
     // Look for valid number of sides
     double sector_angle = gcd(angles[0], angles[1]);
-    int n = (int) (2 * PI / sector_angle);
+    int n = round(2 * PI / sector_angle);
+    cout << "N: " << n << endl;
 
     double radius = sqrt(pow(vectors[0].first, 2) + pow(vectors[0].second, 2));
 

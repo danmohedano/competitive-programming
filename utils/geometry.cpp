@@ -27,7 +27,6 @@ pair<double, double> equidistant_point(vector<pair<double, double>> p){
 double angle_of_vectors(pair<double, double> a, pair<double, double> b){
     double dot = a.first * b.first + a.second * b.second;
     double dem = sqrt(pow(a.first, 2) + pow(a.second, 2)) * sqrt(pow(b.first, 2) + pow(b.second, 2));
-    if (dot < 0) dot *= -1.;
     return acos(dot / dem);
 }
 
