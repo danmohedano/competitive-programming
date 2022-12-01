@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11 -O2 -Wall
-DIR=codeforces
-EXE=1c
+DIR=advent-of-code/2022
+EXE=day1
 
 MAINPATH=$(DIR)/$(EXE)
 
