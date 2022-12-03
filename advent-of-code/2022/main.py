@@ -91,8 +91,59 @@ def day2_part2(data_file='data/day2.txt'):
         return score
 
 
+def day3_part1(data_file='data/day3.txt'):
+    with open(data_file, 'r') as f:
+        rucksacks = f.readlines()
+        prio = 0
+
+        for r in rucksacks:
+            r = r.replace('\n', '')
+            # Divide in compartments
+            c1, c2 = set(r[:len(r) // 2]), set(r[len(r) // 2:])
+
+            # Search for item that appears in both
+            item = list(c1 & c2)[0]
+
+            # Update priority
+            if ord(item) > ord('Z'):
+                # Lower case
+                prio += ord(item) - ord('a') + 1
+            else:
+                # Upper case
+                prio += ord(item) - ord('A') + 27
+
+        return prio
+
+
+def day3_part2(data_file='data/day3.txt'):
+    with open(data_file, 'r') as f:
+        rucksacks = f.readlines()
+        prio = 0
+        groups = [(set(rucksacks[i*3].replace('\n', '')), 
+                   set(rucksacks[i*3+1].replace('\n', '')), 
+                   set(rucksacks[i*3+2].replace('\n', ''))) for i in range(len(rucksacks) // 3)]
+
+        for e1, e2, e3 in groups:
+            # Look for common in all three 
+            item = list(e1 & e2 & e3)[0]
+
+            # Update priority
+            if ord(item) > ord('Z'):
+                # Lower case
+                prio += ord(item) - ord('a') + 1
+            else:
+                # Upper case
+                prio += ord(item) - ord('A') + 27
+
+        return prio
+
+
+
+
 if __name__ == '__main__':
     print('Result Day 1 Part 1: ', day1_part1())
     print('Result Day 1 Part 2: ', day1_part2())
     print('Result Day 2 Part 1: ', day2_part1())
     print('Result Day 2 Part 2: ', day2_part2())
+    print('Result Day 3 Part 1: ', day3_part1())
+    print('Result Day 3 Part 2: ', day3_part2())
