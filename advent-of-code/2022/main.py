@@ -138,6 +138,50 @@ def day3_part2(data_file='data/day3.txt'):
         return prio
 
 
+def day4_part1(data_file='data/day4.txt'):
+    with open(data_file, 'r') as f:
+        pairs = f.readlines()
+        contained = 0
+                                                                                
+        for p in pairs:
+            # Compare sections of Elf A and B
+            sec_a, sec_b = p.replace('\n', '').split(',')
+
+            lim_a = sec_a.split('-')
+            lim_b = sec_b.split('-')
+            
+            # Check for overlapping of A in B
+            if int(lim_a[0]) >= int(lim_b[0]) and int(lim_a[1]) <= int(lim_b[1]):
+                contained += 1
+            elif int(lim_b[0]) >= int(lim_a[0]) and int(lim_b[1]) <= int(lim_a[1]):
+                contained += 1
+
+        return contained
+
+
+def day4_part2(data_file='data/day4.txt'):
+    with open(data_file, 'r') as f:
+        pairs = f.readlines()
+        contained = 0
+                                                                                
+        for p in pairs:
+            # Compare sections of Elf A and B
+            sec_a, sec_b = p.replace('\n', '').split(',')
+
+            lim_a = sec_a.split('-')
+            lim_b = sec_b.split('-')
+            
+            # Check for containment 
+            if int(lim_a[0]) >= int(lim_b[0]) and int(lim_a[1]) <= int(lim_b[1]):
+                contained += 1
+            elif int(lim_b[0]) >= int(lim_a[0]) and int(lim_b[1]) <= int(lim_a[1]):
+                contained += 1
+            elif int(lim_a[0]) <= int(lim_b[0]) and int(lim_a[1]) >= int(lim_b[0]):
+                contained += 1
+            elif int(lim_b[0]) <= int(lim_a[0]) and int(lim_b[1]) >= int(lim_a[0]):
+                contained += 1
+
+        return contained
 
 
 if __name__ == '__main__':
@@ -147,3 +191,5 @@ if __name__ == '__main__':
     print('Result Day 2 Part 2: ', day2_part2())
     print('Result Day 3 Part 1: ', day3_part1())
     print('Result Day 3 Part 2: ', day3_part2())
+    print('Result Day 4 Part 1: ', day4_part1())
+    print('Result Day 4 Part 2: ', day4_part2())
