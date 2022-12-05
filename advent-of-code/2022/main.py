@@ -184,6 +184,91 @@ def day4_part2(data_file='data/day4.txt'):
         return contained
 
 
+def day5_part1(data_file='data/day5.txt'):
+    with open(data_file, 'r') as f:
+        arrangement = f.readlines()
+        n_stacks = 0
+
+        # Read number of stacks
+        for l in arrangement:
+            if '[' not in l:
+                no_space = ' '.join(l.split())
+                n_stacks = max([int(x) for x in no_space.split(' ')])
+                break
+
+        stacks = [[] for i in range(n_stacks)]
+
+        # Read stacks
+        for l in arrangement:
+            if '[' not in l:
+                break
+
+            for i in range(n_stacks):
+                # Read crate of each stack (if there is one)
+                if l[i * 4] == '[':
+                    stacks[i].insert(0, l[i * 4 + 1])
+
+        # Read instructions
+        for l in arrangement:
+            if 'move' in l:
+                n_moved, origin, dest = [int(x) for x in l.replace(' ', '').replace('move', '').replace('from', ',').replace('to', ',').split(',')]
+                # Correct indices
+                origin -= 1
+                dest -= 1
+                # Move crates from origin to destination
+                stacks[dest] += reversed(stacks[origin][len(stacks[origin]) - n_moved :])
+                stacks[origin] = stacks[origin][: len(stacks[origin]) - n_moved]
+
+        top_stacks = ''
+        for s in stacks:
+            if len(s) > 0:
+                top_stacks += s[-1]
+
+        return top_stacks
+
+
+def day5_part2(data_file='data/day5.txt'):
+    with open(data_file, 'r') as f:
+        arrangement = f.readlines()
+        n_stacks = 0
+
+        # Read number of stacks
+        for l in arrangement:
+            if '[' not in l:
+                no_space = ' '.join(l.split())
+                n_stacks = max([int(x) for x in no_space.split(' ')])
+                break
+
+        stacks = [[] for i in range(n_stacks)]
+
+        # Read stacks
+        for l in arrangement:
+            if '[' not in l:
+                break
+
+            for i in range(n_stacks):
+                # Read crate of each stack (if there is one)
+                if l[i * 4] == '[':
+                    stacks[i].insert(0, l[i * 4 + 1])
+
+        # Read instructions
+        for l in arrangement:
+            if 'move' in l:
+                n_moved, origin, dest = [int(x) for x in l.replace(' ', '').replace('move', '').replace('from', ',').replace('to', ',').split(',')]
+                # Correct indices
+                origin -= 1
+                dest -= 1
+                # Move crates from origin to destination
+                stacks[dest] += stacks[origin][len(stacks[origin]) - n_moved :]
+                stacks[origin] = stacks[origin][: len(stacks[origin]) - n_moved]
+
+        top_stacks = ''
+        for s in stacks:
+            if len(s) > 0:
+                top_stacks += s[-1]
+        
+        return top_stacks
+
 if __name__ == '__main__':
     print('Result Day 1 Part 1: ', day1_part1())
     print('Result Day 1 Part 2: ', day1_part2())
@@ -193,3 +278,5 @@ if __name__ == '__main__':
     print('Result Day 3 Part 2: ', day3_part2())
     print('Result Day 4 Part 1: ', day4_part1())
     print('Result Day 4 Part 2: ', day4_part2())
+    print('Result Day 5 Part 1: ', day5_part1())
+    print('Result Day 5 Part 2: ', day5_part2())
