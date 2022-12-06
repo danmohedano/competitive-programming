@@ -269,6 +269,47 @@ def day5_part2(data_file='data/day5.txt'):
         
         return top_stacks
 
+
+def day6_part1(data_file='data/day6.txt'):
+    with open(data_file, 'r') as f:
+        datastream = f.readlines()[0].replace('\n', '')
+        header = []
+
+        for marker in range(len(datastream)):
+            c = datastream[marker]
+            if c not in header:
+                header.append(c)
+                if len(header) == 4:
+                    return marker + 1
+            else:
+                new_start = header.index(c)
+                header = header[new_start + 1:]
+                header.append(c)
+
+        
+        return 0 
+
+
+def day6_part2(data_file='data/day6.txt'):
+    with open(data_file, 'r') as f:
+        datastream = f.readlines()[0].replace('\n', '')
+        header = []
+
+        for marker in range(len(datastream)):
+            c = datastream[marker]
+            if c not in header:
+                header.append(c)
+                if len(header) == 14:
+                    return marker + 1
+            else:
+                new_start = header.index(c)
+                header = header[new_start + 1:]
+                header.append(c)
+
+        
+        return 0 
+
+
 if __name__ == '__main__':
     print('Result Day 1 Part 1: ', day1_part1())
     print('Result Day 1 Part 2: ', day1_part2())
@@ -280,3 +321,5 @@ if __name__ == '__main__':
     print('Result Day 4 Part 2: ', day4_part2())
     print('Result Day 5 Part 1: ', day5_part1())
     print('Result Day 5 Part 2: ', day5_part2())
+    print('Result Day 6 Part 1: ', day6_part1())
+    print('Result Day 6 Part 2: ', day6_part2())
