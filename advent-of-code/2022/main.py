@@ -310,6 +310,156 @@ def day6_part2(data_file='data/day6.txt'):
         return 0 
 
 
+def get_dir(tree, dirs):
+    final_dir = tree['/']['content']
+    for d in dirs:
+        final_dir = final_dir[d]['content']
+
+    return final_dir
+
+
+def add_dir(tree, pwd, new_dir):
+    parent = get_dir(tree, pwd)
+    parent[new_dir] = {'content': {}, 'size': 0} 
+
+
+def add_file(tree, pwd, size, name):
+    parent = get_dir(tree, pwd)
+    parent[name] = {'size': size}
+
+
+def calc_sizes_recursive(current_dir):
+    for ele in current_dir['content']:
+        if 'content' in current_dir['content'][ele]:
+            # Recursively go into sub-dir
+            current_dir['size'] += calc_sizes_recursive(current_dir['content'][ele])
+        else:
+            # If file, just update size 
+            current_dir['size'] += current_dir['content'][ele]['size']
+
+    return current_dir['size']
+ 
+
+def calc_sizes(tree):
+    tree['/']['size'] = calc_sizes_recursive(tree['/'])
+
+
+def find_limited_dirs_max(current_dir, max_size):
+    sizes = []
+    if current_dir['size'] <= max_size:
+        sizes.append(current_dir['size'])
+    
+    # Iterate through contained dirs
+    for ele in current_dir['content']:
+        if 'content' in current_dir['content'][ele]:
+            # If sub-dir, check size
+            sizes += find_limited_dirs_max(current_dir['content'][ele], max_size)
+
+    return sizes
+    
+
+
+def day7_part1(data_file='data/day7.txt'):
+    with open(data_file, 'r') as f:
+        commands = f.readlines()
+        # Tree definition: {'dir_name': {'content': {'dir_name': ...}, 'size': x}
+        # File definition: 'file_name': {'size': x}
+
+        global_tree = {'/': {'content': {}, 'size': 0}} 
+        path = [] 
+       
+        # Build directory tree
+        for c in commands:
+            tokens = c.replace('\n', '').split(' ')
+            if tokens[0] == '$':
+                # Shell command
+                if tokens[1] == 'cd':
+                    # cd command
+                    new_dir = tokens[2]
+                    if new_dir == '/':
+                       path = []
+                    elif new_dir == '..':
+                        path = path[:-1]
+                    elif new_dir not in path:
+                        add_dir(global_tree, path, new_dir)
+                        path.append(new_dir)
+                    else:
+                        path.append(new_dir) 
+                else:
+                    # ls command does nothing
+                    continue
+            elif tokens[0] == 'dir':
+                # Directory definition
+                new_dir = tokens[1] 
+                add_dir(global_tree, path, new_dir)
+            else:
+                # File definition
+                add_file(global_tree, path, int(tokens[0]), tokens[1])
+                
+        calc_sizes(global_tree)
+        sizes = find_limited_dirs_max(global_tree['/'], 100000)
+        return sum(sizes) 
+
+
+def find_limited_dirs_min(current_dir, min_size):
+    sizes = []
+    if current_dir['size'] >= min_size:
+        sizes.append(current_dir['size'])
+    
+    # Iterate through contained dirs
+    for ele in current_dir['content']:
+        if 'content' in current_dir['content'][ele]:
+            # If sub-dir, check size
+            sizes += find_limited_dirs_min(current_dir['content'][ele], min_size)
+
+    return sizes
+
+
+def day7_part2(data_file='data/day7.txt'):
+    with open(data_file, 'r') as f:
+        commands = f.readlines()
+        # Tree definition: {'dir_name': {'content': {'dir_name': ...}, 'size': x}
+        # File definition: 'file_name': {'size': x}
+
+        global_tree = {'/': {'content': {}, 'size': 0}} 
+        path = [] 
+       
+        # Build directory tree
+        for c in commands:
+            tokens = c.replace('\n', '').split(' ')
+            if tokens[0] == '$':
+                # Shell command
+                if tokens[1] == 'cd':
+                    # cd command
+                    new_dir = tokens[2]
+                    if new_dir == '/':
+                       path = []
+                    elif new_dir == '..':
+                        path = path[:-1]
+                    elif new_dir not in path:
+                        add_dir(global_tree, path, new_dir)
+                        path.append(new_dir)
+                    else:
+                        path.append(new_dir) 
+                else:
+                    # ls command does nothing
+                    continue
+            elif tokens[0] == 'dir':
+                # Directory definition
+                new_dir = tokens[1] 
+                add_dir(global_tree, path, new_dir)
+            else:
+                # File definition
+                add_file(global_tree, path, int(tokens[0]), tokens[1])
+                
+        calc_sizes(global_tree)
+        needed_space = 30000000
+        free_space = 70000000 - global_tree['/']['size']
+        sizes = find_limited_dirs_min(global_tree['/'], needed_space - free_space)
+        return min(sizes) 
+
+
+
 if __name__ == '__main__':
     print('Result Day 1 Part 1: ', day1_part1())
     print('Result Day 1 Part 2: ', day1_part2())
@@ -323,3 +473,5 @@ if __name__ == '__main__':
     print('Result Day 5 Part 2: ', day5_part2())
     print('Result Day 6 Part 1: ', day6_part1())
     print('Result Day 6 Part 2: ', day6_part2())
+    print('Result Day 7 Part 1: ', day7_part1())
+    print('Result Day 7 Part 2: ', day7_part2())
