@@ -459,6 +459,55 @@ def day7_part2(data_file='data/day7.txt'):
         return min(sizes) 
 
 
+def day8_part1(data_file='data/day8.txt'):
+    with open(data_file, 'r') as f:
+        trees = f.readlines()
+        trees = np.array([[int(t) for t in x.replace('\n', '')] for x in trees])
+        grid = np.zeros(trees.shape)
+        grid[0,:] = 1
+        grid[-1,:] = 1
+        grid[:,0] = 1
+        grid[:,-1] = 1
+
+        # Iterate through all trees to check
+        for i in range(1, trees.shape[0] - 1):
+            for j in range(1, trees.shape[1] - 1):
+                tree = trees[i][j]
+                if max(trees[i,j+1:]) < tree or max(trees[i,:j]) < tree \
+                        or max(trees[:i,j]) < tree or max(trees[i+1:,j]) < tree:
+                    grid[i,j] = 1
+
+        return int(np.sum(grid)) 
+
+def trees_seen(los, tree):
+    seen = 0
+    for i in range(len(los)):
+        seen += 1
+        if los[i] >= tree:
+            break
+
+    return seen
+
+
+def day8_part2(data_file='data/day8.txt'):
+    with open(data_file, 'r') as f:
+        trees = f.readlines()
+        trees = np.array([[int(t) for t in x.replace('\n', '')] for x in trees])
+        grid = np.zeros(trees.shape)
+
+        # Iterate through all trees to check
+        for i in range(1, trees.shape[0] - 1):
+            for j in range(1, trees.shape[1] - 1):
+                tree = trees[i][j]
+                score_up = trees_seen(np.flip(trees[:i, j]), tree)
+                score_down = trees_seen(trees[i+1:, j], tree) 
+                score_right = trees_seen(trees[i, j+1:], tree)
+                score_left = trees_seen(np.flip(trees[i, :j]), tree)
+                grid[i][j] = score_up * score_down * score_right * score_left
+
+        return int(np.max(grid)) 
+
+
 
 if __name__ == '__main__':
     print('Result Day 1 Part 1: ', day1_part1())
@@ -475,3 +524,6 @@ if __name__ == '__main__':
     print('Result Day 6 Part 2: ', day6_part2())
     print('Result Day 7 Part 1: ', day7_part1())
     print('Result Day 7 Part 2: ', day7_part2())
+    print('Result Day 8 Part 1: ', day8_part1())
+    print('Result Day 8 Part 2: ', day8_part2())
+
