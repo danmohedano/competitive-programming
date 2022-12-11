@@ -603,6 +603,171 @@ def day9_part2(data_file="data/day9.txt"):
         return len(visited_positions)
 
 
+def day10_part1(data_file="data/day10.txt"):
+    with open(data_file, "r") as f:
+        instructions = f.readlines()
+        reg = 1
+        cycle = 1
+        signal_strength = 0
+
+        def check_cycle(cycle, reg):
+            if (cycle - 20) % 40 == 0:
+                return reg * cycle
+
+            return 0
+
+        for inst in instructions:
+            inst = inst.replace("\n", "")
+            if inst == 'noop':
+                signal_strength += check_cycle(cycle, reg)
+                cycle += 1
+            else:
+                value = int(inst.split(" ")[1])
+                signal_strength += check_cycle(cycle, reg)
+                cycle += 1
+                signal_strength += check_cycle(cycle, reg)
+                cycle += 1
+                reg += value
+
+        return signal_strength
+
+
+def day10_part2(data_file="data/day10.txt"):
+    with open(data_file, "r") as f:
+        instructions = f.readlines()
+        reg = 1
+        cycle = 0
+
+        def draw_crt(reg, cycle):
+            print_pos = cycle % 40
+            if print_pos == 0:
+                print('\n', end='')
+            if reg - 1 <= print_pos <= reg + 1:
+                print('#', end='')
+            else:
+                print('.', end='')
+
+        for inst in instructions:
+            inst = inst.replace("\n", "")
+            if inst == 'noop':
+                draw_crt(reg, cycle)
+                cycle += 1
+            else:
+                value = int(inst.split(" ")[1])
+                draw_crt(reg, cycle)
+                cycle += 1
+                draw_crt(reg, cycle)
+                cycle += 1
+                reg += value
+
+        print('\n', end='')
+        return 0
+
+
+def day11_part1(data_file="data/day11.txt"):
+    with open(data_file, "r") as f:
+        monkey_desc = f.readlines()
+
+        class Monkey:
+            def __init__(self):
+                self.items = []
+                self.operation = ""
+                self.test = 0
+                self.dest_true = 0
+                self.dest_false = 0
+                self.inspected = 0
+
+        l_read = 0
+        monkeys = []
+
+        # Read monkey descriptions
+        while l_read < len(monkey_desc):
+            monkey = Monkey()
+            items = monkey_desc[l_read + 1].replace('\n', '').split(':')[1].split(',')
+            monkey.items = [int(x) for x in items]
+            monkey.operation = monkey_desc[l_read + 2].replace('\n', '').split(':')[1].split('=')[1]
+            monkey.test = int(monkey_desc[l_read + 3].replace('\n', '').split(':')[1].split(' ')[3])
+            monkey.dest_true = int(monkey_desc[l_read + 4].replace('\n', '').split(':')[1].split(' ')[4])
+            monkey.dest_false = int(monkey_desc[l_read + 5].replace('\n', '').split(':')[1].split(' ')[4])
+
+            l_read += 7
+            monkeys.append(monkey)
+
+        # Rounds
+        for _ in range(20):
+            for m_idx in range(len(monkeys)):
+                m = monkeys[m_idx]
+                for old in m.items:
+                    m.inspected += 1
+                    new = eval(m.operation)
+                    new = new // 3
+                    if new % m.test == 0:
+                        monkeys[m.dest_true].items.append(new)
+                    else:
+                        monkeys[m.dest_false].items.append(new)
+                    
+                # Remove items from monkey
+                m.items = []
+
+        inspected = sorted([m.inspected for m in monkeys])
+        
+        return inspected[-1] * inspected[-2]
+
+
+def day11_part2(data_file="data/day11.txt"):
+    with open(data_file, "r") as f:
+        monkey_desc = f.readlines()
+
+        class Monkey:
+            def __init__(self):
+                self.items = []
+                self.operation = ""
+                self.test = 0
+                self.dest_true = 0
+                self.dest_false = 0
+                self.inspected = 0
+
+        l_read = 0
+        monkeys = []
+
+        # Read monkey descriptions
+        while l_read < len(monkey_desc):
+            monkey = Monkey()
+            items = monkey_desc[l_read + 1].replace('\n', '').split(':')[1].split(',')
+            monkey.items = [int(x) for x in items]
+            monkey.operation = monkey_desc[l_read + 2].replace('\n', '').split(':')[1].split('=')[1]
+            monkey.test = int(monkey_desc[l_read + 3].replace('\n', '').split(':')[1].split(' ')[3])
+            monkey.dest_true = int(monkey_desc[l_read + 4].replace('\n', '').split(':')[1].split(' ')[4])
+            monkey.dest_false = int(monkey_desc[l_read + 5].replace('\n', '').split(':')[1].split(' ')[4])
+
+            l_read += 7
+            monkeys.append(monkey)
+
+        # Compute LCM of all tests
+        tests = [m.test for m in monkeys]
+        lcm = int(np.lcm.reduce(tests))
+
+        # Rounds
+        for _ in range(10000):
+            for m_idx in range(len(monkeys)):
+                m = monkeys[m_idx]
+                for old in m.items:
+                    m.inspected += 1
+                    new = eval(m.operation)
+                    new = new % lcm
+                    if new % m.test == 0:
+                        monkeys[m.dest_true].items.append(new)
+                    else:
+                        monkeys[m.dest_false].items.append(new)
+                    
+                # Remove items from monkey
+                m.items = []
+
+        inspected = sorted([m.inspected for m in monkeys])
+        
+        return inspected[-1] * inspected[-2]
+
+
 if __name__ == "__main__":
     print("Result Day 1 Part 1: ", day1_part1())
     print("Result Day 1 Part 2: ", day1_part2())
@@ -622,3 +787,7 @@ if __name__ == "__main__":
     print("Result Day 8 Part 2: ", day8_part2())
     print("Result Day 9 Part 1: ", day9_part1())
     print("Result Day 9 Part 2: ", day9_part2())
+    print("Result Day 10 Part 1: ", day10_part1())
+    print("Result Day 10 Part 2: ", day10_part2())
+    print("Result Day 11 Part 1: ", day11_part1())
+    print("Result Day 11 Part 2: ", day11_part2())
