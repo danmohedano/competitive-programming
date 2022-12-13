@@ -1,5 +1,6 @@
 import numpy as np
 import queue
+import functools
 
 
 TEST_FILE = "data/test.txt"
@@ -926,6 +927,65 @@ def day12_part2(data_file="data/day12.txt"):
 
         return shortest_path
 
+def day13_compare(left, right):
+    if isinstance(left, int) and isinstance(right, int):
+        if left < right:
+            return 1
+        elif left == right: 
+            return 0
+        else:
+            return -1
+    elif isinstance(left, list) and isinstance(right, list):
+        for i in range(min(len(left), len(right))): 
+            res = day13_compare(left[i], right[i])
+            if res == 0:
+                continue
+            else: 
+                return res
+
+        if len(left) < len(right):
+            return 1
+        elif len(left) == len(right):
+            return 0
+        else:
+            return -1
+    else:
+        if isinstance(left, int): 
+            return day13_compare([left], right)
+        else:
+            return day13_compare(left, [right])
+
+
+def day13_part1(data_file="data/day13.txt"):
+    with open(data_file, "r") as f:
+        lines = f.readlines()
+        correct_order = 0
+ 
+        for i in range((len(lines) + 1) // 3):
+            left = eval(lines[3 * i].replace('\n', ''))
+            right = eval(lines[3 * i + 1].replace('\n', ''))
+
+            if day13_compare(left, right) == 1:
+                correct_order += (i + 1)
+
+        return correct_order
+            
+
+def day13_part2(data_file="data/day13.txt"):
+    with open(data_file, "r") as f:
+        lines = f.readlines()
+        packets = []
+        packets.append([[2]])
+        packets.append([[6]])
+ 
+        for l in lines:
+            if l != '\n':
+                packets.append(eval(l.replace('\n', '')))
+
+        sorted_packets = sorted(packets, reverse=True, key=functools.cmp_to_key(day13_compare))
+
+        return (sorted_packets.index([[2]]) + 1) * (sorted_packets.index([[6]]) + 1)
+ 
 
 if __name__ == "__main__":
     print("Result Day 1 Part 1: ", day1_part1())
@@ -952,3 +1012,5 @@ if __name__ == "__main__":
     print("Result Day 11 Part 2: ", day11_part2())
     print("Result Day 12 Part 1: ", day12_part1())
     print("Result Day 12 Part 2: ", day12_part2())
+    print("Result Day 13 Part 1: ", day13_part1())
+    print("Result Day 13 Part 2: ", day13_part2())
