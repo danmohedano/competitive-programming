@@ -985,32 +985,139 @@ def day13_part2(data_file="data/day13.txt"):
         sorted_packets = sorted(packets, reverse=True, key=functools.cmp_to_key(day13_compare))
 
         return (sorted_packets.index([[2]]) + 1) * (sorted_packets.index([[6]]) + 1)
+
+
+def day14_sim_sand(start_x, grid):
+    correct = True
+    x, y = start_x, 0
+
+    while True:
+        # Go down
+        try:
+            if not grid[y + 1, x]:
+                y += 1
+            elif not grid[y + 1, x - 1]:
+                y += 1
+                x -= 1
+            elif not grid[y + 1, x + 1]:
+                y += 1
+                x += 1
+            else:
+                # Rest
+                grid[y, x] = 1
+                if y == 0:
+                    correct = False
+                break
+        except:
+            correct = False
+            break
+
+    return correct
  
 
+def day14_part1(data_file="data/day14.txt"):
+    with open(data_file, "r") as f:
+        rock_paths = [[(int(y.split(',')[0]), int(y.split(',')[1]))for y in x.replace('\n', '').split(' -> ')] for x in f.readlines()]
+        max_x, min_x = 0, 500
+        max_y = 0 
+
+        # Search for min and max coordinates
+        for rock in rock_paths:
+            for line in rock:
+                max_x = max(line[0], max_x)
+                min_x = min(line[0], min_x)
+                max_y = max(line[1], max_y)
+        
+        start_x = 500 - min_x
+        grid = np.zeros([max_y + 1, max_x - min_x + 1])
+
+        for rock in rock_paths:
+            for i in range(len(rock) - 1):
+                ini_x, ini_y = rock[i]
+                end_x, end_y = rock[i + 1]
+                range_x = range(ini_x, end_x + 1) if ini_x <= end_x else range(end_x, ini_x + 1)
+                range_y = range(ini_y, end_y + 1) if ini_y <= end_y else range(end_y, ini_y + 1)
+
+                for x in range_x:
+                    for y in range_y:
+                        grid[y, x - min_x] = 1
+
+        sand_grains = 0
+        rest = True
+        while rest:
+            sand_grains += 1
+            rest = day14_sim_sand(start_x, grid)
+
+        return sand_grains - 1
+
+
+def day14_part2(data_file="data/day14.txt"):
+    with open(data_file, "r") as f:
+        rock_paths = [[(int(y.split(',')[0]), int(y.split(',')[1]))for y in x.replace('\n', '').split(' -> ')] for x in f.readlines()]
+        max_x, min_x = 0, 500
+        max_y = 0 
+
+        # Search for min and max coordinates
+        for rock in rock_paths:
+            for line in rock:
+                max_x = max(line[0], max_x)
+                min_x = min(line[0], min_x)
+                max_y = max(line[1], max_y)
+        
+        max_y += 2
+        min_x = min_x - max_y
+        max_x = max_x + max_y
+        start_x = 500 - min_x
+        grid = np.zeros([max_y + 1, max_x - min_x + 1])
+        grid[-1, :] = 1
+
+        for rock in rock_paths:
+            for i in range(len(rock) - 1):
+                ini_x, ini_y = rock[i]
+                end_x, end_y = rock[i + 1]
+                range_x = range(ini_x, end_x + 1) if ini_x <= end_x else range(end_x, ini_x + 1)
+                range_y = range(ini_y, end_y + 1) if ini_y <= end_y else range(end_y, ini_y + 1)
+
+                for x in range_x:
+                    for y in range_y:
+                        grid[y, x - min_x] = 1
+        
+
+        sand_grains = 0
+        rest = True
+        while rest:
+            sand_grains += 1
+            rest = day14_sim_sand(start_x, grid)
+
+        return sand_grains
+
+
 if __name__ == "__main__":
-    print("Result Day 1 Part 1: ", day1_part1())
-    print("Result Day 1 Part 2: ", day1_part2())
-    print("Result Day 2 Part 1: ", day2_part1())
-    print("Result Day 2 Part 2: ", day2_part2())
-    print("Result Day 3 Part 1: ", day3_part1())
-    print("Result Day 3 Part 2: ", day3_part2())
-    print("Result Day 4 Part 1: ", day4_part1())
-    print("Result Day 4 Part 2: ", day4_part2())
-    print("Result Day 5 Part 1: ", day5_part1())
-    print("Result Day 5 Part 2: ", day5_part2())
-    print("Result Day 6 Part 1: ", day6_part1())
-    print("Result Day 6 Part 2: ", day6_part2())
-    print("Result Day 7 Part 1: ", day7_part1())
-    print("Result Day 7 Part 2: ", day7_part2())
-    print("Result Day 8 Part 1: ", day8_part1())
-    print("Result Day 8 Part 2: ", day8_part2())
-    print("Result Day 9 Part 1: ", day9_part1())
-    print("Result Day 9 Part 2: ", day9_part2())
-    print("Result Day 10 Part 1: ", day10_part1())
-    print("Result Day 10 Part 2: ", day10_part2())
-    print("Result Day 11 Part 1: ", day11_part1())
-    print("Result Day 11 Part 2: ", day11_part2())
-    print("Result Day 12 Part 1: ", day12_part1())
-    print("Result Day 12 Part 2: ", day12_part2())
-    print("Result Day 13 Part 1: ", day13_part1())
-    print("Result Day 13 Part 2: ", day13_part2())
+   #print("Result Day 1 Part 1: ", day1_part1())
+   #print("Result Day 1 Part 2: ", day1_part2())
+   #print("Result Day 2 Part 1: ", day2_part1())
+   #print("Result Day 2 Part 2: ", day2_part2())
+   #print("Result Day 3 Part 1: ", day3_part1())
+   #print("Result Day 3 Part 2: ", day3_part2())
+   #print("Result Day 4 Part 1: ", day4_part1())
+   #print("Result Day 4 Part 2: ", day4_part2())
+   #print("Result Day 5 Part 1: ", day5_part1())
+   #print("Result Day 5 Part 2: ", day5_part2())
+   #print("Result Day 6 Part 1: ", day6_part1())
+   #print("Result Day 6 Part 2: ", day6_part2())
+   #print("Result Day 7 Part 1: ", day7_part1())
+   #print("Result Day 7 Part 2: ", day7_part2())
+   #print("Result Day 8 Part 1: ", day8_part1())
+   #print("Result Day 8 Part 2: ", day8_part2())
+   #print("Result Day 9 Part 1: ", day9_part1())
+   #print("Result Day 9 Part 2: ", day9_part2())
+   #print("Result Day 10 Part 1: ", day10_part1())
+   #print("Result Day 10 Part 2: ", day10_part2())
+   #print("Result Day 11 Part 1: ", day11_part1())
+   #print("Result Day 11 Part 2: ", day11_part2())
+   #print("Result Day 12 Part 1: ", day12_part1())
+   #print("Result Day 12 Part 2: ", day12_part2())
+   #print("Result Day 13 Part 1: ", day13_part1())
+   #print("Result Day 13 Part 2: ", day13_part2())
+    print("Result Day 14 Part 1: ", day14_part1())
+    print("Result Day 14 Part 2: ", day14_part2())
