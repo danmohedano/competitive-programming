@@ -164,3 +164,6 @@ dmypy.json
 .idea
 
 */build/*
+
+# AOC Ignores
+advent-of-code/TOKEN
