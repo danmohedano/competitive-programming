@@ -31,7 +31,7 @@ def aoc_input():
         text = r.text
 
     lines = text.split('\n')
-    if len(lines) == 2 and not lines[1]:
+    if len(lines) == 2 and not lines[1] or len(lines) == 1:
         INPUT = lines[0]
     else:
         INPUT = lines[:-1]
